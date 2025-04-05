@@ -1,0 +1,365 @@
+﻿@{
+    ViewBag.Title = "TrackTicket Management";
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+    <style>
+        body {
+            background-color: #f4f7fc;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        h2 {
+            font-weight: bold;
+            color: #495057;
+        }
+
+        .btn {
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+
+            .btn:hover {
+                transform: translateY(-2px);
+            }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+            .btn-primary:hover {
+                background-color: #0056b3;
+                border-color: #004085;
+            }
+
+        .card {
+            border-radius: 12px;
+            border: none;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header {
+            background-color: #343a40;
+            color: #fff;
+            border-radius: 12px 12px 0 0;
+        }
+
+        #ticketsTable {
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table th,
+        .table td {
+            vertical-align: middle;
+            text-align: center;
+        }
+
+        .table th {
+            background-color: #495057;
+            color: #fff;
+        }
+
+        .search-bar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .modal-content {
+            border-radius: 12px;
+        }
+
+        .form-control {
+            box-shadow: none;
+            border: 1px solid #ced4da;
+            transition: border-color 0.2s;
+        }
+
+            .form-control:focus {
+                border-color: #007bff;
+                box-shadow: 0 0 5px rgba(0, 123, 255, 0.25);
+            }
+
+        .text-muted {
+            font-size: 0.85rem;
+        }
+
+        .btn-ticket-number {
+            background-color: #17a2b8; /* Teal color */
+            color: #fff;
+            font-size: 0.9rem;
+            font-weight: bold;
+            border: none;
+            border-radius: 25px;
+            padding: 5px 15px;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+            .btn-ticket-number:hover {
+                background-color: #138496; /* Darker teal */
+                transform: scale(1.05);
+            }
+
+    </style>
+</head>
+
+<body>
+    <div class="container my-5">
+        <h2 class="text-center mb-4">Track Tickets</h2>
+
+        <!-- Search Bar -->
+        <div class="search-bar mb-4">
+            <input type="text" id="searchTicketInput" class="form-control w-50" placeholder="Search by Ticket Number">
+            <button id="searchTicketBtn" class="btn btn-primary">Search</button>
+            <button id="clearSearchBtn" class="btn btn-secondary">Clear</button>
+        </div>
+
+        <!-- Add Ticket Button -->
+        <div class="d-flex justify-content-end mb-4">
+            <button id="addTicketBtn" class="btn btn-success">+ Add New Ticket</button>
+        </div>
+
+        <!-- Tickets Table -->
+        <div class="table-responsive">
+            <table id="ticketsTable" class="table table-hover table-bordered">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Date</th>
+                        <th>Ticket Number</th>
+                        <th>Department Name</th>
+                        <th>Category Name</th>
+                        <th>SubCategory Name</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- Data will be dynamically loaded -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- Modal for edit -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <!-- Content dynamically loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Delete Confirmation -->
+    <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <!-- Content will be dynamically loaded here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Asking Ticket ID -->
+    <div class="modal fade" id="ticketIdModal" tabindex="-1" aria-labelledby="ticketIdModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ticketIdModalLabel">Enter Ticket ID</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="ticketIdForm">
+                        <div class="mb-3">
+                            <label for="ticketIdInput" class="form-label">Ticket ID</label>
+                            <input type="text" id="ticketIdInput" class="form-control" placeholder="Enter Ticket ID" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="button" id="submitTicketIdBtn" class="btn btn-primary">Proceed</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            loadTickets();
+
+            // Load tickets into the table
+            function loadTickets(ticketNo = '') {
+                $.ajax({
+                    url: '@Url.Action("GetAllTickets", "TrackTicket")',
+                    type: 'GET',
+                    dataType: 'json',
+                    data: { ticketNo: ticketNo }, // Pass the ticket number for search
+                    success: function (response) {
+                        if (!response || response.length === 0) {
+                            $('#ticketsTable tbody').html('<tr><td colspan="8" class="text-center">No tickets available</td></tr>');
+                            return;
+                        }
+
+                        let rows = '';
+                        response.forEach(ticket => {
+                            rows += `
+                                <tr>
+                                    <td>${ticket.Id}</td>
+                                    <td>${new Date(parseInt(ticket.Date.substr(6))).toLocaleDateString()}</td>
+                                    <td>
+                                        <button class="btn btn-ticket-number" data-id="${ticket.Id}">${ticket.TicketNo}</button>
+                                    </td>
+                                    <td>${ticket.DepartmentName}</td>
+                                    <td>${ticket.CategoryName}</td>
+                                    <td>${ticket.SubCategoryName}</td>
+                                    <td>${ticket.Status}</td>
+                                    <td>
+                                        <button class="btn btn-warning btn-sm btn-edit" data-id="${ticket.Id}">Update</button>
+                                        <button class="btn btn-danger btn-sm btn-delete" data-id="${ticket.Id}">Delete</button>
+                                    </td>
+                                </tr>`;
+                        });
+
+                        $('#ticketsTable tbody').html(rows);
+                    },
+                    error: function () {
+                        alert('Failed to load tickets.');
+                    }
+                });
+            }
+
+
+
+            // Search by Ticket Number
+            $('#searchTicketBtn').on('click', function () {
+                const ticketNo = $('#searchTicketInput').val().trim();
+                loadTickets(ticketNo);
+            });
+
+            // Clear search and reload all tickets
+            $('#clearSearchBtn').on('click', function () {
+                $('#searchTicketInput').val('');
+                loadTickets();
+            });
+
+            // Handle Edit button click
+            $(document).on('click', '.btn-edit', function () {
+                const ticketId = $(this).data('id');
+
+                // Load the edit form in the modal
+                $.ajax({
+                    url: '@Url.Action("Edit", "TrackTicket")',
+                    type: 'GET',
+                    data: { id: ticketId },
+                    success: function (result) {
+                        $('#editModal .modal-content').html(result);
+                        $('#editModal').modal('show');
+                    },
+                    error: function () {
+                        alert('Failed to load the edit form.');
+                    }
+                });
+            });
+
+            // Handle Add button click
+            $('#addTicketBtn').click(function () {
+                $.ajax({
+                    url: '@Url.Action("Create", "TrackTicket")',
+                    type: 'GET',
+                    success: function (result) {
+                        $('#editModal .modal-content').html(result);
+                        $('#editModal').modal('show');
+                    },
+                    error: function () {
+                        alert('Failed to load the add form.');
+                    }
+                });
+            });
+
+            // Handle Delete button click
+            $(document).on('click', '.btn-delete', function () {
+                const ticketId = $(this).data('id');
+
+                // Load the delete confirmation modal
+                $.ajax({
+                    url: '@Url.Action("Delete", "TrackTicket")',
+                    type: 'GET',
+                    data: { id: ticketId },
+                    success: function (result) {
+                        $('#deleteModal .modal-content').html(result);
+                        $('#deleteModal').modal('show');
+                    },
+                    error: function () {
+                        alert('Failed to load the delete confirmation.');
+                    }
+                });
+            });
+
+            // Show modal when "Update/Close Ticket" button is clicked
+            $('#updateCloseTicketBtn').click(function (e) {
+                e.preventDefault(); // Prevent default link behavior
+                $('#ticketIdModal').modal('show'); // Show the modal
+                $('#ticketIdModal').modal('hide');
+            });
+
+            // Handle "Proceed" button in the modal
+            $('#submitTicketIdBtn').click(function () {
+                const ticketId = $('#ticketIdInput').val().trim();
+
+                if (!ticketId) {
+                    alert('Please enter a valid Ticket ID.');
+                    return;
+                }
+
+                else {
+                    // Load the edit form in the modal
+                    $.ajax({
+                        url: '@Url.Action("Edit", "TrackTicket")',
+                        type: 'GET',
+                        data: { id: ticketId },
+                        success: function (result) {
+                            $('#editModal .modal-content').html(result);
+                            $('#editModal').modal('show');
+                        },
+                        error: function () {
+                            alert('Failed to load the edit form.');
+                        }
+                    });
+                }
+            });
+
+
+            $('#deleteModal').on('hidden.bs.modal', function () {
+                loadTickets();
+            });
+
+            // Refresh tickets after modal close
+            $('#editModal').on('hidden.bs.modal', function () {
+                loadTickets();
+            });
+
+
+
+        });
+    </script>
+</body>
+</html>
+
+
+
+
+

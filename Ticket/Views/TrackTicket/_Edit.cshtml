@@ -1,0 +1,231 @@
+﻿@*@model Ticket.Models.TrackTicket
+
+    <div class="modal-header">
+        <h5 class="modal-title">Edit Ticket</h5>
+    </div>
+    <div class="modal-body">
+        <form id="editForm">
+            @Html.AntiForgeryToken()
+
+            <input type="hidden" name="Id" value="@Model.Id" />
+
+            <div class="mb-3">
+                <label for="TicketNo" class="form-label">Ticket No</label>
+                <input type="text" class="form-control" id="TicketNo" name="TicketNo" value="@Model.TicketNo" required />
+            </div>
+
+            <div class="mb-3">
+                <label for="DepartmentId" class="form-label">Department</label>
+                <select class="form-control" id="DepartmentId" name="DepartmentId" required>
+                    @foreach (var department in ViewBag.Departments as IEnumerable<dynamic>)
+                    {
+                        <option value="@department.Id" @(department.Id == Model.DepartmentId ? "selected" : "")>@department.Name</option>
+                    }
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="CategoryId" class="form-label">Category</label>
+                <select class="form-control" id="CategoryId" name="CategoryId" required>
+                    @foreach (var category in ViewBag.Categories as IEnumerable<dynamic>)
+                    {
+                        <option value="@category.Id" @(category.Id == Model.CategoryId ? "selected" : "")>@category.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="SubCategoryId" class="form-label">SubCategory</label>
+                <select class="form-control" id="SubCategoryId" name="SubCategoryId" required>
+                    @foreach (var subCategory in ViewBag.SubCategories as IEnumerable<dynamic>)
+                    {
+                        <option value="@subCategory.Id" @(subCategory.Id == Model.SubCategoryId ? "selected" : "")>@subCategory.Name</option>
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3">
+                <label for="Status" class="form-label">Status</label>
+                <input type="text" class="form-control" id="Status" name="Status" value="@Model.Status" required />
+            </div>
+
+            <button type="submit" class="btn btn-primary">Save Changes</button>
+        </form>
+    </div>
+
+    <script>
+        $(document).on('submit', '#editForm', function (e) {
+            e.preventDefault();
+
+            $.ajax({
+                url: '@Url.Action("Edit", "TrackTicket")',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        $('#editModal').modal('hide'); // Close the modal
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('Failed to update the ticket.');
+                }
+            });
+        });
+    </script>*@
+
+
+
+
+
+
+
+
+@model Ticket.Models.TrackTicket
+
+<div class="modal-header bg-primary text-white">
+    <h5 class="modal-title">Edit Ticket</h5>
+    <button type="button" class="btn-close text-white" data-bs-dismiss="modal" aria-label="Close"></button>
+</div>
+<div class="modal-body">
+    <form id="editForm" class="needs-validation" novalidate>
+        @Html.AntiForgeryToken()
+
+        <input type="hidden" name="Id" value="@Model.Id" />
+
+        <div class="mb-3">
+            <label for="TicketNo" class="form-label">Ticket No</label>
+            <input type="text" class="form-control" id="TicketNo" name="TicketNo" value="@Model.TicketNo" required />
+            <div class="invalid-feedback">Ticket No is required.</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="DepartmentId" class="form-label">Department</label>
+            <select class="form-select" id="DepartmentId" name="DepartmentId" required>
+                @foreach (var department in ViewBag.Departments as IEnumerable<dynamic>)
+                {
+                    <option value="@department.Id" @(department.Id == Model.DepartmentId ? "selected" : "")>@department.Name</option>
+                }
+            </select>
+            <div class="invalid-feedback">Please select a department.</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="CategoryId" class="form-label">Category</label>
+            <select class="form-select" id="CategoryId" name="CategoryId" required>
+                @foreach (var category in ViewBag.Categories as IEnumerable<dynamic>)
+                {
+                    <option value="@category.Id" @(category.Id == Model.CategoryId ? "selected" : "")>@category.Name</option>
+                }
+            </select>
+            <div class="invalid-feedback">Please select a category.</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="SubCategoryId" class="form-label">SubCategory</label>
+            <select class="form-select" id="SubCategoryId" name="SubCategoryId" required>
+                @foreach (var subCategory in ViewBag.SubCategories as IEnumerable<dynamic>)
+                {
+                    <option value="@subCategory.Id" @(subCategory.Id == Model.SubCategoryId ? "selected" : "")>@subCategory.Name</option>
+                }
+            </select>
+            <div class="invalid-feedback">Please select a subcategory.</div>
+        </div>
+
+        <div class="mb-3">
+            <label for="Status" class="form-label">Status</label>
+            <select class="form-select" id="Status" name="Status" required>
+                <option value="Open" @(Model.Status == "Open" ? "selected" : "")>Open</option>
+                <option value="InProgress" @(Model.Status == "InProgress" ? "selected" : "")>InProgress</option>
+                <option value="Closed" @(Model.Status == "Closed" ? "selected" : "")>Closed</option>
+            </select>
+            <div class="invalid-feedback">Please select a valid status.</div>
+        </div>
+
+        <div class="text-end">
+            <button type="submit" class="btn btn-primary px-4">Save Changes</button>
+        </div>
+    </form>
+</div>
+
+<script>
+    // Form Validation
+    (function () {
+        'use strict'
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+
+    $(document).on('submit', '#editForm', function (e) {
+        e.preventDefault();
+
+        if (this.checkValidity()) {
+            $.ajax({
+                url: '@Url.Action("Edit", "TrackTicket")',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        $('#editModal').modal('hide'); // Close the modal
+                    } else {
+                        alert(response.message);
+                    }
+                },
+                error: function () {
+                    alert('Failed to update the ticket.');
+                }
+            });
+        }
+    });
+</script>
+
+<style>
+    .modal-header {
+        border-bottom: 1px solid #dee2e6;
+    }
+
+    .btn-close {
+        background: none;
+        border: none;
+        font-size: 1.2rem;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+
+    .modal-body {
+        padding: 1.5rem;
+    }
+
+    .form-select, .form-control {
+        border-radius: 0.375rem;
+    }
+
+    .text-end button {
+        font-size: 1rem;
+    }
+</style>
+
+
+
+
+

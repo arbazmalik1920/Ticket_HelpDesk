@@ -1,0 +1,59 @@
+﻿
+@model Ticket.Models.RoleMaster
+
+@{
+    ViewBag.Title = "Edit Role";
+}
+
+<div class="container my-5">
+    <div class="bg-white p-4 rounded shadow">
+        <h2 class="text-center mb-4">Edit Role</h2>
+        <form id="editRoleForm">
+            <input type="hidden" id="RoleId" value="@Model.RoleId" />
+            <div class="mb-3">
+                <label for="RoleName" class="form-label">Role Name</label>
+                <input type="text" class="form-control" id="RoleName" name="RoleName" value="@Model.RoleName" required />
+            </div>
+            <div class="mb-3">
+                <label for="Status" class="form-label">Status</label>
+                <select class="form-select" id="Status" name="Status">
+                    <option value="Active" @(Model.Status == "Active" ? "selected" : "")>Active</option>
+                    <option value="Inactive" @(Model.Status == "Inactive" ? "selected" : "")>Inactive</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Save Changes</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $("#editRoleForm").submit(function(e) {
+            e.preventDefault();
+
+            var roleId = $("#RoleId").val();
+            var roleName = $("#RoleName").val();
+            var status = $("#Status").val();
+
+            $.ajax({
+                url: '@Url.Action("Edit", "RoleMaster")',
+                method: 'POST',
+                data: {
+                    RoleId: roleId,
+                    RoleName: roleName,
+                    Status: status
+                },
+                success: function(response) {
+                    alert(response.message);
+                    if (response.success) {
+                        window.location.href = '@Url.Action("Index", "RoleMaster")';
+                    }
+                },
+                error: function() {
+                    alert("An error occurred while processing your request.");
+                }
+            });
+        });
+    </script>
+}

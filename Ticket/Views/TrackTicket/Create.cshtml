@@ -1,0 +1,227 @@
+﻿
+@*@model Ticket.Models.TrackTicket
+
+@{
+    ViewBag.Title = "Create TrackTicket";
+}
+
+<div class="container my-5">
+    <h2>Create Ticket</h2>
+    <form id="createForm">
+        <div class="mb-3">
+            <label for="date" class="form-label">Date</label>
+            <input type="date" id="date" name="Date" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label for="ticketNumber" class="form-label">Ticket Number</label>
+            <input type="text" id="ticketNumber" name="TicketNo" class="form-control" required />
+        </div>
+        <div class="mb-3">
+            <label for="department" class="form-label">Department</label>
+            <select id="department" name="DepartmentId" class="form-select" required>
+                <option value="">Select Department</option>
+                @foreach (var dept in ViewBag.Departments)
+                {
+                    <option value="@dept.Id">@dept.Name</option>
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="category" class="form-label">Category</label>
+            <select id="category" name="CategoryId" class="form-select" required>
+                <option value="">Select Category</option>
+                @foreach (var category in ViewBag.Categories)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="subCategory" class="form-label">SubCategory</label>
+            <select id="subCategory" name="SubCategoryId" class="form-select" required>
+                <option value="">Select SubCategory</option>
+                @foreach (var subcategory in ViewBag.SubCategories)
+                {
+                    <option value="@subcategory.Id">@subcategory.Name</option>
+                }
+            </select>
+        </div>
+        <div class="mb-3">
+            <label for="status" class="form-label">Status</label>
+            <select id="status" name="Status" class="form-select" required>
+                <option value="Open">Open</option>
+                <option value="InProgress">InProgress</option>
+                <option value="Closed">Closed</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Create</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+
+    $('#createForm').submit(function (event) {
+        event.preventDefault();
+        const formData = $(this).serialize();
+        $.ajax({
+            url: '/TrackTicket/Create',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    window.location.href = '/TrackTicket/Index';
+                } else {
+                    alert(response.message);
+                }
+            }
+        });
+    });
+
+</script>*@
+
+
+
+
+@model Ticket.Models.TrackTicket
+
+@{
+    ViewBag.Title = "Create TrackTicket";
+}
+
+<div class="container my-5">
+    <div class="card shadow-lg">
+        <div class="card-header bg-primary text-white">
+            <h3 class="text-center mb-0">Create Ticket</h3>
+        </div>
+        <div class="card-body">
+            <form id="createForm" class="needs-validation" novalidate>
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" id="date" name="Date" class="form-control" required />
+                        <div class="invalid-feedback">Please select a valid date.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="ticketNumber" class="form-label">Ticket Number</label>
+                        <input type="text" id="ticketNumber" name="TicketNo" class="form-control" required />
+                        <div class="invalid-feedback">Ticket Number is required.</div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-3">
+                    <div class="col-md-6">
+                        <label for="department" class="form-label">Department</label>
+                        <select id="department" name="DepartmentId" class="form-select" required>
+                            <option value="">Select Department</option>
+                            @foreach (var dept in ViewBag.Departments)
+                            {
+                                <option value="@dept.Id">@dept.Name</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">Please select a department.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="category" class="form-label">Category</label>
+                        <select id="category" name="CategoryId" class="form-select" required>
+                            <option value="">Select Category</option>
+                            @foreach (var category in ViewBag.Categories)
+                            {
+                                <option value="@category.Id">@category.Name</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">Please select a category.</div>
+                    </div>
+                </div>
+
+                <div class="row g-3 mt-3">
+                    <div class="col-md-6">
+                        <label for="subCategory" class="form-label">SubCategory</label>
+                        <select id="subCategory" name="SubCategoryId" class="form-select" required>
+                            <option value="">Select SubCategory</option>
+                            @foreach (var subcategory in ViewBag.SubCategories)
+                            {
+                                <option value="@subcategory.Id">@subcategory.Name</option>
+                            }
+                        </select>
+                        <div class="invalid-feedback">Please select a subcategory.</div>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="status" class="form-label">Status</label>
+                        <select id="status" name="Status" class="form-select" required>
+                            <option value="Open">Open</option>
+                            <option value="InProgress">InProgress</option>
+                            <option value="Closed">Closed</option>
+                        </select>
+                        <div class="invalid-feedback">Please select a valid status.</div>
+                    </div>
+                </div>
+
+                <div class="mt-4 text-center">
+                    <button type="submit" class="btn btn-primary btn-lg px-4">Create Ticket</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    // Form Validation
+    (function () {
+        'use strict'
+        const forms = document.querySelectorAll('.needs-validation');
+        Array.from(forms).forEach(function (form) {
+            form.addEventListener('submit', function (event) {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+
+    // Handle form submission
+    $('#createForm').submit(function (event) {
+        event.preventDefault();
+        if (this.checkValidity()) {
+            const formData = $(this).serialize();
+            $.ajax({
+                url: '/TrackTicket/Create',
+                type: 'POST',
+                data: formData,
+                success: function (response) {
+                    if (response.success) {
+                        alert(response.message);
+                        window.location.href = '/TrackTicket/Index';
+                    } else {
+                        alert(response.message);
+                    }
+                }
+            });
+        }
+    });
+</script>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .card {
+        border-radius: 10px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        border-color: #007bff;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+</style>

@@ -1,0 +1,171 @@
+﻿
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - Ticket App</title>
+    @Styles.Render("~/Content/css")
+    @Scripts.Render("~/bundles/modernizr")
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KyZXEJ6F2lY0wM6ax2XjxSyOooxfi+9siRZnZpJmxRI8zp1d09HldN0Wdx6rsYFP" crossorigin="anonymous">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Fixed Side Menu -->
+    <div id="sideMenu" class="bg-dark text-white position-fixed" style="width: 250px; height: 100%; padding-top: 20px; display: none;">
+        <h3 class="text-center text-light p-3">TicketApp <i class="bi bi-ticket-perforated-fill"></i></h3>
+        <a href="/Home/Index" class="text-white d-block p-2 fw-bold text-decoration-none"><i class="bi bi-house-door-fill"></i> HOME</a>
+
+        <!-- Products Dropdown -->
+        <div class="menu-item">
+            <a href="#" class="text-white d-block p-2 fw-bold text-decoration-none hover-effect" id="mastersToggle">
+                <i class="bi bi-box-seam"></i> PRODUCTS<i class="bi bi-chevron-down float-end"></i>
+            </a>
+            <div id="mastersMenu" class="sub-menu" style="display: none;">
+                <a href="/Product/Index" class="text-white d-block p-2 ps-4 text-decoration-none">Product</a>
+            </div>
+        </div>
+
+        <!-- Masters Dropdown -->
+        <div class="menu-item">
+            <a href="#" class="text-white d-block p-2 fw-bold text-decoration-none hover-effect" id="mastersToggle">
+                <i class="bi bi-gear-fill"></i> MASTERS<i class="bi bi-chevron-down float-end"></i>
+            </a>
+            <div id="mastersMenu" class="sub-menu" style="display: none;">
+                <a href="/Department/Index" class="text-white d-block p-2 ps-4 text-decoration-none">Department</a>
+                <a href="/Category/Index" class="text-white d-block p-2 ps-4 text-decoration-none">Category</a>
+                <a href="/SubCategory/Index" class="text-white d-block p-2 ps-4 text-decoration-none">SubCategory</a>
+            </div>
+        </div>
+
+        <!-- User Dropdown -->
+        <div class="menu-item">
+            <a href="#" class="text-white d-block p-2 fw-bold text-decoration-none hover-effect" id="userToggle">
+                <i class="bi bi-person-fill"></i> USER <i class="bi bi-chevron-down float-end"></i>
+            </a>
+            <div id="userMenu" class="sub-menu" style="display: none;">
+                <a href="/User/ChangePassword" class="text-white d-block p-2 ps-4 text-decoration-none">Change Password</a>
+                <a href="/User/Index" class="text-white d-block p-2 ps-4 text-decoration-none">User Master</a>
+                <a href="/RoleMaster/Index" class="text-white d-block p-2 ps-4 text-decoration-none">Role Master</a>
+            </div>
+        </div>
+
+        <!-- Ticket Dropdown -->
+        <div class="menu-item">
+            <a href="#" class="text-white d-block p-2 fw-bold text-decoration-none" id="ticketToggle">
+                <i class="bi bi-ticket-perforated-fill"></i> TICKET <i class="bi bi-chevron-down float-end"></i>
+            </a>
+            <div id="ticketMenu" class="sub-menu" style="display: none;">
+                <a href="/TrackTicket/Create" class="text-white d-block p-2 ps-4 text-decoration-none">Add Ticket</a>
+                <a href="/TrackTicket/Index" class="text-white d-block p-2 ps-4 text-decoration-none">Track Ticket</a>
+                <a href="#" id="updateCloseTicketBtn" class="text-white d-block p-2 ps-4 text-decoration-none">
+                    Update/Close Ticket
+                </a>
+            </div>
+        </div>
+
+        
+
+
+
+
+        <!-- Report Dropdown -->
+        <div class="menu-item">
+            <a href="#" class="text-white d-block p-2 fw-bold text-decoration-none hover-effect" id="reportToggle">
+                <i class="bi bi-bar-chart-line-fill"></i> REPORT <i class="bi bi-chevron-down float-end"></i>
+            </a>
+            <div id="reportMenu" class="sub-menu" style="display: none;">
+                <a href="/TrackTicket/TATReport" class="text-white d-block p-2 ps-4 text-decoration-none">TAT Report</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div id="content" style="margin-left: 0;">
+        <!-- Top Bar -->
+        <div id="topBar" class="d-flex justify-content-between align-items-center bg-light p-3" style="position: relative;">
+            <!-- The toggle button -->
+            <button id="toggleSidebarBtn" class="btn btn-dark" style="position: absolute; left: 20px; top: 25px; z-index: 1050;">
+                <i class="bi bi-list"></i> <!-- Hamburger Icon -->
+            </button>
+
+            <!-- Welcome Message -->
+            <span style="margin-left: 60px;">Welcome <i class="bi bi-person-fill"></i> T-Users <i class="bi bi-ticket-perforated-fill"></i>, @User.Identity.Name!</span> <!-- Added left margin to prevent overlap -->
+
+            <a href="/Account/Logout" class="btn btn-sm btn-danger">Logout</a>
+        </div>
+
+        <!-- Dynamic Main Content -->
+        <div class="main-content p-3">
+            @RenderBody()
+        </div>
+    </div>
+
+    @Scripts.Render("~/bundles/jquery")
+    @Scripts.Render("~/bundles/bootstrap")
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pzjw8f+ua7Kw1TIq0p8W7Y3+g6f9L5R5apMhg1p1dW5He2Zz3dU5/7voXE5QpVXh" crossorigin="anonymous"></script>
+    @RenderSection("scripts", required: false)
+
+    
+
+    <script>
+        $(document).ready(function () {
+            // Toggle the sidebar visibility when the toggle button is clicked
+            $("#toggleSidebarBtn").click(function () {
+                // Toggle sidebar visibility
+                $("#sideMenu").toggle();
+
+                // Adjust the content margin dynamically
+                var marginLeft = $("#sideMenu").is(":visible") ? "250px" : "0px";
+                $("#content").css("margin-left", marginLeft);
+
+                // Move the toggle button outside when the sidebar is opened
+                if ($("#sideMenu").is(":visible")) {
+                    $("#toggleSidebarBtn").css({
+                        //"left": "250px", // Move to the right of the sidebar
+                        "position": "absolute"
+                    });
+                } else {
+                    $("#toggleSidebarBtn").css({
+                        "left": "20px", // Return to original position
+                        "position": "absolute"
+                    });
+                }
+            });
+
+            // Toggle menu visibility when clicked
+            $(".menu-item a").click(function () {
+                event.stopPropagation();
+                var $submenu = $(this).next(".sub-menu");
+                var $icon = $(this).find("i");
+                var isVisible = $submenu.is(":visible");
+
+                // Toggle the submenu visibility
+                if (isVisible) {
+                    $submenu.slideUp();
+                    $icon.removeClass("bi-chevron-up").addClass("bi-chevron-down");
+                } else {
+                    //$(".sub-menu").slideUp();
+                    //$(".bi-chevron-up").removeClass("bi-chevron-up").addClass("bi-chevron-down");
+                    $submenu.stop(true, true).slideDown();
+                    $icon.removeClass("bi-chevron-down").addClass("bi-chevron-up");
+                }
+            });
+
+            // Close all dropdowns if clicking outside
+            $(document).click(function (e) {
+                if (!$(e.target).closest(".menu-item").length) {
+                    $(".sub-menu").slideUp();
+                    $(".bi-chevron-up").removeClass("bi-chevron-up").addClass("bi-chevron-down");
+                }
+            });
+
+        });
+
+
+
+
+    </script>
+</body>
+</html>

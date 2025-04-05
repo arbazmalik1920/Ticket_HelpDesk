@@ -1,0 +1,42 @@
+﻿@model Ticket.Models.RoleMaster
+
+@{
+    ViewBag.Title = "Delete Role";
+}
+
+<div class="container">
+    <h2>Delete Role</h2>
+    <p>Are you sure you want to delete the role <strong>@Model.RoleName</strong>?</p>
+    <form method="post" id="deleteRoleForm">
+        <input type="hidden" id="RoleId" value="@Model.RoleId" />
+        <button type="submit" class="btn btn-danger">Delete</button>
+        <a href="@Url.Action("Index", "RoleMaster")" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        $("#deleteRoleForm").submit(function(e) {
+            e.preventDefault();
+
+            var roleId = $("#RoleId").val();
+
+            $.ajax({
+                url: '@Url.Action("DeleteConfirmed", "RoleMaster")',
+                method: 'POST',
+                data: {
+                    RoleId: roleId
+                },
+                success: function(response) {
+                    alert(response.message);
+                    if (response.success) {
+                        window.location.href = '@Url.Action("Index", "RoleMaster")';
+                    }
+                },
+                error: function() {
+                    alert("An error occurred while processing your request.");
+                }
+            });
+        });
+    </script>
+}

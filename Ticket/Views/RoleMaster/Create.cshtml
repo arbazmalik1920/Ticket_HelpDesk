@@ -1,0 +1,54 @@
+﻿
+@{
+    ViewBag.Title = "Create Role";
+}
+
+<div class="container my-5">
+    <div class="bg-white p-4 rounded shadow">
+        <h2 class="text-center mb-4">Create New Role</h2>
+        <form id="createRoleForm">
+            <div class="mb-3">
+                <label for="RoleName" class="form-label">Role Name</label>
+                <input type="text" class="form-control" id="RoleName" name="RoleName" required />
+            </div>
+            <div class="mb-3">
+                <label for="Status" class="form-label">Status</label>
+                <select class="form-select" id="Status" name="Status">
+                    <option value="Active">Active</option>
+                    <option value="Inactive">Inactive</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Create</button>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $("#createRoleForm").submit(function(e) {
+            e.preventDefault();
+
+            var roleName = $("#RoleName").val();
+            var status = $("#Status").val();
+
+            $.ajax({
+                url: '@Url.Action("Create", "RoleMaster")',
+                method: 'POST',
+                data: {
+                    RoleName: roleName,
+                    Status: status
+                },
+                success: function(response) {
+                    alert(response.message);
+                    if (response.success) {
+                        window.location.href = '@Url.Action("Index", "RoleMaster")';
+                    }
+                },
+                error: function() {
+                    alert("An error occurred while processing your request.");
+                }
+            });
+        });
+    </script>
+}

@@ -1,0 +1,88 @@
+﻿@model Ticket.Models.User
+
+@{
+    ViewBag.Title = "Create User";
+}
+
+<div class="container mt-5">
+    <h2 class="text-center mb-4">Add New User</h2>
+    <form id="createUserForm">
+        <div class="mb-3">
+            <label class="form-label">Username</label>
+            <input type="text" name="Username" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Password</label>
+            <input type="password" name="Password" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Name</label>
+            <input type="text" name="Name" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label for="department" class="form-label">Department</label>
+            <select id="department" name="DepartmentId" class="form-select" required>
+                <option value="">Select Department</option>
+                @*@foreach (var dept in (IEnumerable<SelectListItem>)ViewBag.Departments)
+                {
+                    <option value="@dept.Value">@dept.Text</option>
+                }*@
+                @foreach (var dept in ViewBag.Departments)
+                {
+                    <option value="@dept.Id">@dept.Name</option>
+                }
+
+            </select>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Mobile No</label>
+            <input type="text" name="MobileNo" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Email</label>
+            <input type="email" name="Email" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Role</label>
+            <input type="text" name="Role" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Status</label>
+            <select name="Status" class="form-select">
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+            </select>
+        </div>
+
+        <button type="button" id="btnSave" class="btn btn-primary w-100">Save</button>
+    </form>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $("#btnSave").click(function () {
+        $.ajax({
+            url: '@Url.Action("Create", "User")',
+            type: 'POST',
+            data: $("#createUserForm").serialize(),
+            success: function (response) {
+                if (response.success) {
+                    alert(response.message);
+                    window.location.href = '@Url.Action("Index", "User")';
+                } else {
+                    alert(response.message);
+                }
+            },
+            error: function () {
+                alert("An error occurred while creating the user.");
+            }
+        });
+    });
+</script>
